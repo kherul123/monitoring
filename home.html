@@ -2,101 +2,176 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-	<title>monitoring</title>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-	<script src="https://cdn.tailwindcss.com"></script>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-	<style>
-		.card {
-			transition: transform 0.2s, box-shadow 0.2s;
-		}
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Monitoring</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <style>
+    /* === Animasi Kartu === */
+    .card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-		.card:hover {
-			transform: translateY(-10px);
-			box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-		}
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
 
-		.sidebar {
-			transition: transform 0.2s, box-shadow 0.2s;
-		}
+    /* === Sidebar Hover === */
+    .sidebar:hover {
+      transform: translateX(-10px);
+      box-shadow: 10px 0 20px rgba(0, 0, 0, 0.2);
+    }
 
-		.sidebar:hover {
-			transform: translateX(-10px);
-			box-shadow: 10px 0 20px rgba(0, 0, 0, 0.2);
-		}
-	</style>
+    /* === Notifikasi Box === */
+    .notif {
+      margin-bottom: 10px;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .notif-info {
+      background-color: #ffeb3b;
+      color: #7e7e7e;
+    }
+
+    .notif-warning {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #popupNotifikasi {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 
-
 <body class="bg-gray-100">
-	<div class="flex">
-		<div class="bg-gray-900 text-white w-64 min-h-screen shadow-lg sidebar">
-			<div class="flex items-center justify-center h-16 bg-blue-600">
-				<img alt="Monitoring logo" class="mr-2" height="80" src="rempah.jpeg" width="80" />
-				<span class="text-xl font-bold">Monitoring</span>
-			</div>
-			<nav class="mt-10">
-				<a class="flex items-center py-2 px-6 bg-gray-800 text-white shadow-md" href="dashboard.php">
-					<i class="fas fa-home mr-3"></i> Beranda
-				</a>
-				<a class="flex items-center py-2 px-6 text-gray-400 hover:bg-gray-800 hover:text-white shadow-md" href="tabel.php">
-					<i class="fas fa-table mr-3"></i> Tabel
-				</a>
-				<a class="flex items-center py-2 px-6 text-gray-400 hover:bg-gray-800 hover:text-white shadow-md" href="grafik.php">
-					<i class="fas fa-chart-line mr-3"></i> Grafik
-				</a>
-				<a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" href="user.php">
-					<i class="fas fa-user mr-2">
-					</i>
-					User
-				</a>
-				<a class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700" href="login.php">
-					<i class="fas fa-sign-out-alt mr-2">
-					</i>
-					Logout
-				</a>
-			</nav>
-		</div>
-		<div class="flex-1">
-			<header class="bg-blue-600 text-white h-16 flex justify-between items-center shadow-lg">
-				<h1 class="text-xl font-bold ">Suhu dan Kelembapan rempah</h1>
-				<nav>
-					<a class="text-white" href="dashboard.php">Beranda</a> &gt; <a class="text-white" href="dashboard.php">Beranda</a>
-				</nav>
-			</header>
-			<main class="p-6">
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div class="bg-blue-400 text-white p-8 rounded-lg shadow-md card">
-						<div class="text-5xl font-bold">27.30 °C</div>
-						<div class="mt-4 text-xl">Suhu</div>
-						<div class="mt-6 bg-blue-500 p-3 rounded">Suhu rempah</div>
-					</div>
-					<div class="bg-green-500 text-white p-8 rounded-lg shadow-md card">
-						<div class="text-5xl font-bold">64.20 %RH</div>
-						<div class="mt-4 text-xl">Kelembapan</div>
-						<div class="mt-6 bg-green-600 p-3 rounded">Kelembapan Rempah</div>
-					</div>
-					<div class="bg-yellow-500 text-white p-8 rounded-lg shadow-md card">
-						<div class="text-3xl font-bold">26-Jul-2025 21:34:10</div>
-						<div class="mt-4 text-xl">Tanggal dan waktu</div>
-						<div class="mt-6 bg-yellow-600 p-3 rounded">Tanggal Terakhir Update</div>
-					</div>
-					<div class="bg-orange-500 text-white p-8 rounded-lg shadow-md card">
-						<div class="text-5xl font-bold">2 kg</div>
-						<div class="mt-4 text-xl">Berat</div>
-						<div class="mt-6 bg-orange-600 p-3 rounded">Berat rempah</div>
-					</div>
-				</div>
-			</main>
-			<footer class="bg-white text-center p-4 mt-6 shadow-inner">
-				<p>Copyright © 2025. Monitoring Suhu dan Kelembapan rempah. All rights reserved.</p>
-				<p>Khoerul Anwar Hasbiyan</p>
-				<p>Powered by <a class="text-black-500" href="kherul.html">kherul</a></p>
-			</footer>
-		</div>
-	</div>
+  <div class="flex flex-col md:flex-row min-h-screen overflow-hidden">
+    <!-- === Sidebar Navigasi === -->
+    <div class="bg-gray-900 text-white w-full md:w-64 sidebar">
+      <div class="flex items-center justify-center h-16 bg-blue-600">
+        <img src="rempah.jpeg" alt="Logo" class="h-10 w-10 mr-2" />
+        <span class="text-xl font-bold">Monitoring</span>
+      </div>
+      <nav class="mt-10 space-y-1">
+        <a href="dashboard.php"
+          class="flex items-center py-2 px-6 bg-gray-800 text-white shadow-md hover:bg-gray-700"><i
+            class="fas fa-home mr-3"></i> Dashboard</a>
+        <a href="tabel.php"
+          class="flex items-center py-2 px-6 text-white hover:bg-gray-700 hover:text-white shadow-md"><i
+            class="fas fa-table mr-3"></i> Tabel</a>
+        <a href="grafik.php"
+          class="flex items-center py-2 px-6 text-white hover:bg-gray-700 hover:text-white shadow-md"><i
+            class="fas fa-chart-line mr-3"></i> Grafik</a>
+        <a href="user.php"
+          class="flex items-center py-2 px-6 text-white hover:bg-gray-700 hover:text-white shadow-md"><i
+            class="fas fa-user mr-3"></i> User</a>
+        <a href="logout.php" onclick="return confirmLogout();"
+          class="flex items-center py-2 px-6 text-white hover:bg-gray-700 hover:text-white shadow-md"><i
+            class="fas fa-sign-out-alt mr-3"></i> Logout</a>
+      </nav>
+    </div>
+
+    <!-- === Konten Utama === -->
+    <div class="flex-1">
+      <!-- === Header Atas === -->
+      <header class="bg-blue-600 text-white h-16 flex justify-between items-center shadow-lg px-6 relative">
+        <h1 class="text-base md:text-xl font-bold">Suhu dan Kelembapan Rempah</h1>
+        <div class="flex items-center space-x-4">
+          <!-- Bell Notifikasi -->
+          <div class="relative mr-2">
+            <button id="notifButton" onclick="toggleNotifikasi()" class="text-white text-xl relative">
+              <i class="fas fa-bell"></i>
+              <span
+                class="absolute -top-1 -right-2 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full">2</span>
+            </button>
+          </div>
+          <span class="font-bold text-sm md:text-lg">Admin</span>
+          <img src="profile.jpg" alt="Profile"
+            class="w-8 md:w-10 h-8 md:h-10 rounded-full border-2 border-white" />
+        </div>
+
+        <!-- === Popup Notifikasi === -->
+        <div id="popupNotifikasi"
+          class="hidden absolute top-16 right-6 bg-white rounded-lg shadow-lg p-4 w-full md:w-96 z-50">
+          <div class="notif notif-info"><strong>Info!</strong> Suhu normal, cek modul peltier.</div>
+          <div class="notif notif-warning"><strong>Perhatian!</strong> Berat menyentuh 0,5 kg. Pengeringan selesai!</div>
+        </div>
+      </header>
+
+      <!-- === Kartu Data === -->
+      <main class="p-4 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <!-- Suhu -->
+          <div class="bg-blue-400 text-white p-6 rounded-lg shadow-md card">
+            <div class="text-4xl font-bold">30 °C</div>
+            <div class="mt-4 text-lg">Suhu</div>
+            <div class="mt-6 bg-blue-500 p-2 rounded">Suhu Rempah</div>
+          </div>
+
+          <!-- Kelembapan -->
+          <div class="bg-green-500 text-white p-6 rounded-lg shadow-md card">
+            <div class="text-4xl font-bold">60 %RH</div>
+            <div class="mt-4 text-lg">Kelembapan</div>
+            <div class="mt-6 bg-green-600 p-2 rounded">Kelembapan Rempah</div>
+          </div>
+
+          <!-- Tanggal & Waktu -->
+          <div class="bg-yellow-500 text-white p-6 rounded-lg shadow-md card">
+            <div id="waktuSekarang" class="text-2xl font-bold">--</div>
+            <div class="mt-4 text-lg">Tanggal dan Waktu</div>
+            <div class="mt-6 bg-yellow-600 p-2 rounded">Terakhir Update</div>
+          </div>
+
+          <!-- Berat -->
+          <div class="bg-orange-500 text-white p-6 rounded-lg shadow-md card">
+            <div class="text-4xl font-bold">0.48 kg</div>
+            <div class="mt-4 text-lg">Berat</div>
+            <div class="mt-6 bg-orange-600 p-2 rounded">Berat Rempah</div>
+          </div>
+        </div>
+      </main>
+
+      <!-- === Footer === -->
+      <footer class="bg-white text-center p-4 mt-6 shadow-inner">
+        <p>© 2025 Monitoring Rempah. All rights reserved.</p>
+        <p>Dibuat oleh Khoerul Anwar Hasbiyan</p>
+        <p>Powered by <a class="text-blue-600" href="kherul.html">kherul</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- === Script === -->
+  <script>
+    function updateWaktu() {
+      const now = new Date();
+      const waktu = now.toLocaleString("id-ID", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+      document.getElementById("waktuSekarang").textContent = waktu;
+    }
+
+    updateWaktu();
+    setInterval(updateWaktu, 1000);
+
+    function toggleNotifikasi() {
+      document.getElementById("popupNotifikasi").classList.toggle("hidden");
+    }
+
+    function confirmLogout() {
+      return confirm("Anda yakin ingin logout?");
+    }
+  </script>
 </body>
 
 </html>
