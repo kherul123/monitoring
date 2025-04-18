@@ -1,145 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>Dashboard Admin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+	<meta charset="UTF-8">
+	<title>Dashboard User</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+	<style>
+		body {
+			display: flex;
+			margin: 0;
+			font-family: 'Segoe UI', sans-serif;
+		}
+
+		.sidebar {
+			width: 200px;
+			background: rgb(0, 0, 0);
+			min-height: 100vh;
+			color: white;
+			padding: 20px 10px;
+			box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.sidebar h2 {
+			font-size: 20px;
+			margin-bottom: 20px;
+			text-align: center;
+			color: white;
+		}
+
+		.sidebar a {
+			display: block;
+			color: white;
+			text-decoration: none;
+			margin: 15px 0;
+			padding: 8px 10px;
+			border-radius: 5px;
+		}
+
+		.sidebar a:hover {
+			background-color: #1b4f72;
+		}
+
+		.content {
+			flex-grow: 1;
+			padding: 30px;
+			background: #f5f5f5;
+		}
+
+		h1,
+		h2 {
+			color: #333;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-bottom: 40px;
+			background: white;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 12px;
+			text-align: center;
+		}
+
+		th {
+			background-color: #2e86de;
+			color: white;
+		}
+
+		canvas {
+			background: white;
+			padding: 10px;
+			border-radius: 10px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+		}
+
+		.button-cetak {
+			background-color: #28a745;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-bottom: 20px;
+			text-decoration: none;
+			display: inline-block;
+		}
+	</style>
 </head>
-<body class="bg-gray-100">
-  <div class="flex h-screen overflow-hidden font-sans relative">
-    
-    <!-- Sidebar -->
-    <aside id="sidebar" class="bg-gray-900 w-56 flex flex-col text-gray-300 fixed inset-y-0 left-0 transform -translate-x-full sm:translate-x-0 transition-transform duration-300 z-40">
-      <nav class="flex flex-col mt-4 space-y-1 px-2">
-        <a class="flex items-center space-x-3 px-3 py-2 rounded bg-gray-800 text-gray-100" href="#"><i class="fas fa-home w-5"></i><span class="text-sm">Dashboard</span></a>
-        <a class="flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-800" href="#"><i class="fas fa-table w-5"></i><span class="text-sm">Tabel</span></a>
-        <a class="flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-800" href="#"><i class="fas fa-chart-line w-5"></i><span class="text-sm">Grafik</span></a>
-        <a class="flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-800" href="#"><i class="fas fa-user w-5"></i><span class="text-sm">User</span></a>
-        <a class="flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-800" href="#"><i class="fas fa-sign-out-alt w-5"></i><span class="text-sm">Logout</span></a>
-      </nav>
-    </aside>
 
-    <!-- Overlay to close sidebar when clicking outside -->
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-30 hidden z-30 sm:hidden"></div>
+<body>
+	<div class="sidebar">
+		<h2>User Panel</h2>
+		<a href="dashboard_user.php">📊 Dashboard</a>
+		<a href="logout.php" onclick="return confirmLogout();">🚪 Logout</a>
+		<script>
+			function confirmLogout() {
+				return confirm("Anda yakin ingin logout?");
+			}
+		</script>
+	</div>
 
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col overflow-hidden ml-0 sm:ml-56">
-      
-      <!-- Topbar -->
-      <header class="flex items-center bg-blue-600 px-4 h-14 text-white relative z-10">
-        <button id="sidebarToggle" class="sm:hidden mr-3 focus:outline-none">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-        <img src="https://storage.googleapis.com/a1aa/image/0ddc71ee-d393-43fb-ab84-b1589452dc48.jpg" class="h-10 w-10 rounded-sm mr-3" alt="Image"/>
-        <span class="font-bold text-base select-none mr-6 hidden sm:inline">Monitoring</span>
-        <h1 class="font-semibold select-none flex-1 text-xs sm:text-sm md:text-base">Suhu dan Kelembapan Rempah</h1>
-        
-        <div id="notifWrapper" class="relative mr-4 cursor-pointer">
-          <i id="notifToggle" class="fas fa-bell text-xl"></i>
-          <span class="absolute -top-1 -right-2 bg-red-600 text-xs font-semibold rounded-full px-1.5 select-none">2</span>
-          
-          <!-- Notif Dropdown -->
-          <div id="notifBox" class="absolute right-0 mt-2 w-64 bg-white text-black rounded shadow-lg hidden z-50">
-            <div class="p-3 border-b font-semibold">Notifikasi</div>
-            <ul class="text-sm">
-              <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Update suhu terbaru: 28.5°C</li>
-              <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Kelembapan mencapai 65.3%RH</li>
-            </ul>
-          </div>
-        </div>
-        
-        <span class="font-semibold select-none mr-3 lowercase text-xs sm:text-base">hasbiyan</span>
-        <img src="https://storage.googleapis.com/a1aa/image/6791580d-20af-45e6-f46e-abb7595281c0.jpg" class="h-8 w-8 rounded-full border border-white" alt="Profile"/>
-      </header>
+	<div class="content">
+		<h1>Selamat Datang, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
 
-      <!-- Main Dashboard Content -->
-      <main class="p-4 sm:p-6 overflow-y-auto space-y-6 bg-gray-100 flex-1">
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-          <!-- Cards here (suhu, kelembapan, tanggal, berat) -->
-          <!-- Suhu -->
-          <section class="bg-blue-400 rounded-lg p-5 sm:p-6 shadow-md flex flex-col justify-between">
-            <div>
-              <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-none">
-                28.5 <span class="text-2xl sm:text-3xl font-extrabold">°C</span>
-              </h2>
-              <p class="text-white mt-2 mb-4 text-sm sm:text-base">Suhu</p>
-            </div>
-            <div class="bg-blue-600 rounded px-3 py-1 text-white text-xs sm:text-sm select-none">Suhu rempah</div>
-          </section>
+		<a class="button-cetak" href="cetak_pdf.php" target="_blank">🖨️ Cetak PDF Tabel</a>
+		<a class="button-cetak" href="#" onclick="exportPDF()">📄 Cetak PDF Grafik</a>
 
-          <!-- Kelembapan -->
-          <section class="bg-green-500 rounded-lg p-5 sm:p-6 shadow-md flex flex-col justify-between">
-            <div>
-              <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-none">
-                65.3 <span class="text-2xl sm:text-3xl font-extrabold">%RH</span>
-              </h2>
-              <p class="text-white mt-2 mb-4 text-sm sm:text-base">Kelembapan</p>
-            </div>
-            <div class="bg-green-700 rounded px-3 py-1 text-white text-xs sm:text-sm select-none">Kelembapan Rempah</div>
-          </section>
+		<h2>📋 Data Sensor</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Nama Bahan</th>
+					<th>Suhu (°C)</th>
+					<th>Kelembapan (%RH)</th>
+					<th>Berat Basah (kg)</th>
+					<th>Berat Kering (kg)</th>
+					<th>Tanggal dan Waktu</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php mysqli_data_seek($queryTabel, 0);
+				while ($row = mysqli_fetch_assoc($queryTabel)) : ?>
+					<tr>
+						<td><?= $row['id'] ?></td>
+						<td><?= $row['Nama_bahan'] ?></td>
+						<td><?= $row['suhu'] ?></td>
+						<td><?= $row['kelembaban'] ?></td>
+						<td><?= $row['berat_basah'] ?></td>
+						<td><?= $row['berat_kering'] ?></td>
+						<td><?= $row['waktu'] ?></td>
+					</tr>
+				<?php endwhile; ?>
+			</tbody>
+		</table>
 
-          <!-- Tanggal -->
-          <section class="bg-yellow-400 rounded-lg p-5 sm:p-6 shadow-md flex flex-col justify-between">
-            <div>
-              <h2 class="text-lg sm:text-xl font-extrabold text-white leading-tight">
-                Jumat, 18 April 2025 pukul 21.05.22
-              </h2>
-              <p class="text-white mt-2 mb-4 text-sm sm:text-base">Tanggal dan waktu</p>
-            </div>
-            <div class="bg-yellow-600 rounded px-3 py-1 text-white text-xs sm:text-sm select-none">Tanggal Terakhir Update</div>
-          </section>
+		<h2>📊 Grafik Berat Rempah</h2>
+		<canvas id="grafikBerat" width="1000" height="400"></canvas>
+	</div>
 
-          <!-- Berat -->
-          <section class="bg-orange-500 rounded-lg p-5 sm:p-6 shadow-md flex flex-col justify-between">
-            <div>
-              <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-none">
-                0.5 <span class="text-2xl sm:text-3xl font-extrabold">kg</span>
-              </h2>
-              <p class="text-white mt-2 mb-4 text-sm sm:text-base">Berat</p>
-            </div>
-            <div class="bg-orange-600 rounded px-3 py-1 text-white text-xs sm:text-sm select-none">Berat rempah</div>
-          </section>
-        </div>
-      </main>
-    </div>
-  </div>
+	<script>
+		const ctx = document.getElementById('grafikBerat').getContext('2d');
+		const chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: <?= json_encode($labels) ?>,
+				datasets: [{
+					label: 'Berat (kg)',
+					data: <?= json_encode($berat) ?>,
+					borderColor: 'blue',
+					backgroundColor: 'rgba(62, 18, 106, 0.1)',
+					borderWidth: 2,
+					tension: 0.4,
+					pointBackgroundColor: 'blue',
+					fill: true
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					title: {
+						display: true,
+						text: 'Grafik Berat Rempah'
+					}
+				},
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const btn = document.getElementById('sidebarToggle');
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
+		async function exportPDF() {
+			const {
+				jsPDF
+			} = window.jspdf;
+			const pdf = new jsPDF();
 
-      const notifToggle = document.getElementById('notifToggle');
-      const notifBox = document.getElementById('notifBox');
+			const canvasElement = document.getElementById("grafikBerat");
+			const canvasImage = await html2canvas(canvasElement);
+			const imageData = canvasImage.toDataURL("image/png");
 
-      // Toggle sidebar
-      btn.addEventListener('click', () => {
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-      });
+			const imgProps = pdf.getImageProperties(imageData);
+			const pdfWidth = pdf.internal.pageSize.getWidth();
+			const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      // Hide sidebar when clicking outside
-      overlay.addEventListener('click', () => {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-      });
-
-      // Toggle notification dropdown
-      notifToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        notifBox.classList.toggle('hidden');
-      });
-
-      // Hide notif dropdown when clicking outside
-      document.addEventListener('click', function (e) {
-        if (!notifBox.contains(e.target) && e.target !== notifToggle) {
-          notifBox.classList.add('hidden');
-        }
-      });
-    });
-  </script>
+			pdf.addImage(imageData, 'PNG', 10, 10, pdfWidth - 20, pdfHeight);
+			pdf.save("grafik_berat_rempah.pdf");
+		}
+	</script>
 </body>
+
 </html>
