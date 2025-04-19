@@ -20,7 +20,7 @@
       left: 15px;
       font-size: 28px;
       cursor: pointer;
-      z-index: 1100;
+      z-index: 1100; /* Pastikan selalu di atas */
       color: #000;
     }
 
@@ -142,15 +142,18 @@
 
 <body>
 
-  <div class="hamburger" onclick="toggleSidebar()">☰</div>
+  <!-- Tombol Hamburger -->
+  <div class="hamburger" id="hamburger">☰</div>
 
   <div class="wrapper">
+    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <h2>User Panel</h2>
       <a href="#">📊 Dashboard</a>
       <a href="#" onclick="alert('Logout dulu ya!')">🚪 Logout</a>
     </div>
 
+    <!-- Konten Utama -->
     <div class="content">
       <h1>Selamat Datang, User!</h1>
 
@@ -198,12 +201,30 @@
   </div>
 
   <script>
-    function toggleSidebar() {
-      document.getElementById("sidebar").classList.toggle("show");
-    }
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
 
+    // Toggle sidebar + ubah ikon
+    hamburger.addEventListener("click", function () {
+      sidebar.classList.toggle("show");
+      this.textContent = sidebar.classList.contains("show") ? "✖" : "☰";
+    });
+
+    // Klik di luar sidebar untuk menutup (hanya di mobile)
+    document.addEventListener("click", function (e) {
+      if (
+        sidebar.classList.contains("show") &&
+        !sidebar.contains(e.target) &&
+        !hamburger.contains(e.target)
+      ) {
+        sidebar.classList.remove("show");
+        hamburger.textContent = "☰";
+      }
+    });
+
+    // Grafik dummy
     const ctx = document.getElementById('grafikBerat').getContext('2d');
-    const chart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['08:30', '08:35', '08:40', '08:45', '08:50'],
