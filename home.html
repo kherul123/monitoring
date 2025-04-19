@@ -4,30 +4,36 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Dashboard User</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 	<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 	<style>
 		body {
-			display: flex;
 			margin: 0;
 			font-family: 'Segoe UI', sans-serif;
+			background: #f5f5f5;
+		}
+
+		.wrapper {
+			display: flex;
+			min-height: 100vh;
 		}
 
 		.sidebar {
-			width: 200px;
+			width: 220px;
 			background: rgb(0, 0, 0);
-			min-height: 100vh;
 			color: white;
 			padding: 20px 10px;
 			box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
 		}
 
 		.sidebar h2 {
-			font-size: 20px;
-			margin-bottom: 20px;
 			text-align: center;
 			color: white;
+			font-size: 20px;
+			margin-bottom: 20px;
 		}
 
 		.sidebar a {
@@ -45,12 +51,10 @@
 
 		.content {
 			flex-grow: 1;
-			padding: 30px;
-			background: #f5f5f5;
+			padding: 20px;
 		}
 
-		h1,
-		h2 {
+		h1, h2 {
 			color: #333;
 		}
 
@@ -62,8 +66,7 @@
 			box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 		}
 
-		th,
-		td {
+		th, td {
 			border: 1px solid #ddd;
 			padding: 12px;
 			text-align: center;
@@ -92,61 +95,106 @@
 			text-decoration: none;
 			display: inline-block;
 		}
+
+		.hamburger {
+			display: none;
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			font-size: 26px;
+			cursor: pointer;
+			color: #000;
+			z-index: 1001;
+		}
+
+		@media (max-width: 768px) {
+			.wrapper {
+				flex-direction: column;
+			}
+
+			.sidebar {
+				position: fixed;
+				top: 0;
+				left: 0;
+				height: 100%;
+				transform: translateX(-100%);
+				z-index: 1000;
+			}
+
+			.sidebar.show {
+				transform: translateX(0);
+			}
+
+			.hamburger {
+				display: block;
+			}
+
+			.content {
+				padding: 70px 20px 20px;
+			}
+		}
 	</style>
 </head>
 
 <body>
-	<div class="sidebar">
-		<h2>User Panel</h2>
-		<a href="dashboard_user.php">📊 Dashboard</a>
-		<a href="logout.php" onclick="return confirmLogout();">🚪 Logout</a>
-		<script>
-			function confirmLogout() {
-				return confirm("Anda yakin ingin logout?");
-			}
-		</script>
-	</div>
+	<div class="hamburger" onclick="toggleSidebar()">☰</div>
 
-	<div class="content">
-		<h1>Selamat Datang, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
+	<div class="wrapper">
+		<div class="sidebar" id="sidebar">
+			<h2>User Panel</h2>
+			<a href="dashboard_user.php">📊 Dashboard</a>
+			<a href="logout.php" onclick="return confirmLogout();">🚪 Logout</a>
+		</div>
 
-		<a class="button-cetak" href="cetak_pdf.php" target="_blank">🖨️ Cetak PDF Tabel</a>
-		<a class="button-cetak" href="#" onclick="exportPDF()">📄 Cetak PDF Grafik</a>
+		<div class="content">
+			<h1>Selamat Datang, <?= htmlspecialchars($_SESSION['username']) ?>!</h1>
 
-		<h2>📋 Data Sensor</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Nama Bahan</th>
-					<th>Suhu (°C)</th>
-					<th>Kelembapan (%RH)</th>
-					<th>Berat Basah (kg)</th>
-					<th>Berat Kering (kg)</th>
-					<th>Tanggal dan Waktu</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php mysqli_data_seek($queryTabel, 0);
-				while ($row = mysqli_fetch_assoc($queryTabel)) : ?>
+			<a class="button-cetak" href="cetak_pdf.php" target="_blank">🖨️ Cetak PDF Tabel</a>
+			<a class="button-cetak" href="#" onclick="exportPDF()">📄 Cetak PDF Grafik</a>
+
+			<h2>📋 Data Sensor</h2>
+			<table>
+				<thead>
 					<tr>
-						<td><?= $row['id'] ?></td>
-						<td><?= $row['Nama_bahan'] ?></td>
-						<td><?= $row['suhu'] ?></td>
-						<td><?= $row['kelembaban'] ?></td>
-						<td><?= $row['berat_basah'] ?></td>
-						<td><?= $row['berat_kering'] ?></td>
-						<td><?= $row['waktu'] ?></td>
+						<th>ID</th>
+						<th>Nama Bahan</th>
+						<th>Suhu (°C)</th>
+						<th>Kelembapan (%RH)</th>
+						<th>Berat Basah (kg)</th>
+						<th>Berat Kering (kg)</th>
+						<th>Tanggal dan Waktu</th>
 					</tr>
-				<?php endwhile; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php mysqli_data_seek($queryTabel, 0);
+					while ($row = mysqli_fetch_assoc($queryTabel)) : ?>
+						<tr>
+							<td><?= $row['id'] ?></td>
+							<td><?= $row['Nama_bahan'] ?></td>
+							<td><?= $row['suhu'] ?></td>
+							<td><?= $row['kelembaban'] ?></td>
+							<td><?= $row['berat_basah'] ?></td>
+							<td><?= $row['berat_kering'] ?></td>
+							<td><?= $row['waktu'] ?></td>
+						</tr>
+					<?php endwhile; ?>
+				</tbody>
+			</table>
 
-		<h2>📊 Grafik Berat Rempah</h2>
-		<canvas id="grafikBerat" width="1000" height="400"></canvas>
+			<h2>📊 Grafik Berat Rempah</h2>
+			<canvas id="grafikBerat" width="1000" height="400"></canvas>
+		</div>
 	</div>
 
 	<script>
+		function toggleSidebar() {
+			document.getElementById("sidebar").classList.toggle("show");
+		}
+
+		function confirmLogout() {
+			return confirm("Anda yakin ingin logout?");
+		}
+
 		const ctx = document.getElementById('grafikBerat').getContext('2d');
 		const chart = new Chart(ctx, {
 			type: 'line',
