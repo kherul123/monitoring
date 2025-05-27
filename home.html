@@ -1,260 +1,70 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Responsive</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-    }
-
-    .hamburger {
-      display: none;
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 1100; /* Pastikan selalu di atas */
-      color: #000;
-    }
-
-    .wrapper {
-      display: flex;
-    }
-
-    .sidebar {
-      width: 220px;
-      background: #000;
-      color: #fff;
-      padding: 20px 10px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-
-    .sidebar.show {
-      transform: translateX(0);
-    }
-
-    .sidebar h2 {
-      text-align: center;
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin: 15px 0;
-      padding: 8px 10px;
-      border-radius: 5px;
-    }
-
-    .sidebar a:hover {
-      background-color: #1b4f72;
-    }
-
-    .content {
-      margin-left: 0;
-      padding: 80px 20px 20px;
-      width: 100%;
-    }
-
-    .button-cetak {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-bottom: 20px;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 40px;
-      background: white;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    }
-
-    th,
-    td {
-      border: 1px solid #ddd;
-      padding: 12px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #2e86de;
-      color: white;
-    }
-
-    canvas {
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 100%;
-    }
-
-    @media (min-width: 769px) {
-      .hamburger {
-        display: none;
-      }
-
-      .sidebar {
-        transform: translateX(0);
-        position: relative;
-      }
-
-      .content {
-        margin-left: 220px;
-        padding: 30px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .hamburger {
-        display: block;
-      }
-
-      .sidebar {
-        position: fixed;
-      }
-    }
-  </style>
+	<meta charset="utf-8" />
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<title>Halaman Login Kherul</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+	<style>
+		.shadow-3d {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+		}
+	</style>
 </head>
 
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+	<div class="bg-white shadow-3d rounded-lg flex flex-col md:flex-row max-w-4xl w-full overflow-hidden">
+		<!-- Bagian kiri: Gambar & Judul -->
+		<div class="bg-gradient-to-b from-blue-500 to-blue-700 text-white p-8 md:rounded-l-lg rounded-t-lg md:rounded-t-none flex flex-col items-center justify-center md:w-1/2 w-full">
+			<img alt="Image of ginger and turmeric" class="mb-4 shadow-3d rounded-full border-4 border-white" height="150" src="https://storage.googleapis.com/a1aa/image/Lndi5D-AMQgWhPUUCYjoEOvtEJWEMDHTcTQhFrNpfc0.jpg" width="150" />
+			<h2 class="text-2xl font-bold mb-4 shadow-3d p-2 rounded bg-white text-black">HELLO ADMIN</h2>
+			<p class="text-center text-lg shadow-3d p-2 rounded bg-white text-black font-bold">Web Monitoring Suhu Bahan Rempah Jamu</p>
+		</div>
 
-  <!-- Tombol Hamburger -->
-  <div class="hamburger" id="hamburger">☰</div>
+		<!-- Bagian kanan: Form Login -->
+		<div class="p-8 md:w-1/2 w-full shadow-3d bg-white">
+			<?php if (isset($_SESSION['notif'])) : ?>
+				<div class="bg-red-500 text-white p-3 rounded mb-4">
+					<?= $_SESSION['notif']; ?>
+				</div>
+				<?php unset($_SESSION['notif']); ?>
+			<?php endif; ?>
 
-  <div class="wrapper">
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-      <h2>User Panel</h2>
-      <a href="#">📊 Dashboard</a>
-      <a href="#" onclick="alert('Logout dulu ya!')">🚪 Logout</a>
-    </div>
+			<div class="shadow-3d p-6 rounded bg-white">
+				<h2 class="text-3xl font-bold mb-6">Login Account</h2>
+				<form method="post">
+					<!-- Username -->
+					<div class="mb-4">
+						<label class="block text-gray-700 text-lg mb-1" for="username">Username</label>
+						<div class="flex items-center border border-gray-300 rounded shadow-3d overflow-hidden bg-white">
+							<span class="bg-gray-100 px-3 py-2 text-black-600 text-xl">
+								<i class="fas fa-user"></i>
+							</span>
+							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="username" name="username" placeholder="Username" type="text" required />
+						</div>
+					</div>
 
-    <!-- Konten Utama -->
-    <div class="content">
-      <h1>Selamat Datang, User!</h1>
+					<!-- Password -->
+					<div class="mb-4">
+						<label class="block text-gray-700 text-lg mb-1" for="password">Password</label>
+						<div class="flex items-center border border-gray-300 rounded shadow-3d overflow-hidden bg-white">
+							<span class="bg-gray-100 px-3 py-2 text-gray-600 text-xl">
+								<i class="fas fa-lock"></i>
+							</span>
+							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="password" name="password" placeholder="Password" type="password" required />
+						</div>
+					</div>
 
-      <a class="button-cetak" href="#">🖨️ Cetak PDF Tabel</a>
-      <a class="button-cetak" href="#">📄 Cetak PDF Grafik</a>
-
-      <h2>📋 Data Sensor</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nama Bahan</th>
-            <th>Suhu (°C)</th>
-            <th>Kelembapan (%RH)</th>
-            <th>Berat Basah (kg)</th>
-            <th>Berat Kering (kg)</th>
-            <th>Tanggal dan Waktu</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Jahe</td>
-            <td>28</td>
-            <td>65</td>
-            <td>1.2</td>
-            <td>0.8</td>
-            <td>2025-04-19 08:30</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Kunyit</td>
-            <td>30</td>
-            <td>60</td>
-            <td>1.0</td>
-            <td>0.7</td>
-            <td>2025-04-19 08:35</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h2>📊 Grafik Berat Rempah</h2>
-      <canvas id="grafikBerat"></canvas>
-    </div>
-  </div>
-
-  <script>
-    const sidebar = document.getElementById("sidebar");
-    const hamburger = document.getElementById("hamburger");
-
-    // Toggle sidebar + ubah ikon
-    hamburger.addEventListener("click", function () {
-      sidebar.classList.toggle("show");
-      this.textContent = sidebar.classList.contains("show") ? "✖" : "☰";
-    });
-
-    // Klik di luar sidebar untuk menutup (hanya di mobile)
-    document.addEventListener("click", function (e) {
-      if (
-        sidebar.classList.contains("show") &&
-        !sidebar.contains(e.target) &&
-        !hamburger.contains(e.target)
-      ) {
-        sidebar.classList.remove("show");
-        hamburger.textContent = "☰";
-      }
-    });
-
-    // Grafik dummy
-    const ctx = document.getElementById('grafikBerat').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['08:30', '08:35', '08:40', '08:45', '08:50'],
-        datasets: [{
-          label: 'Berat (kg)',
-          data: [1.2, 1.1, 1.05, 1.0, 0.95],
-          borderColor: 'blue',
-          backgroundColor: 'rgba(62, 18, 106, 0.1)',
-          borderWidth: 2,
-          tension: 0.4,
-          fill: true,
-          pointBackgroundColor: 'blue',
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Grafik Berat Rempah'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: false
-          }
-        }
-      }
-    });
-  </script>
+					<!-- Tombol -->
+					<button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded text-lg shadow-3d transition duration-300" type="submit">
+						<i class="fas fa-sign-in-alt mr-2"></i> Login
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
