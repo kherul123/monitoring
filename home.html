@@ -1,12 +1,49 @@
+<?php
+session_start();
+include 'config.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'])) {
+	$username = $_POST['username'];
+	$password = $_POST['password'];
+
+	$stmt = mysqli_prepare($koneksi, "SELECT * FROM users WHERE username = ?");
+	mysqli_stmt_bind_param($stmt, "s", $username);
+	mysqli_stmt_execute($stmt);
+	$result = mysqli_stmt_get_result($stmt);
+	$user = mysqli_fetch_assoc($result);
+
+	if ($user && password_verify($password, $user['password'])) {
+		$_SESSION['username'] = $username;
+		$_SESSION['role'] = $user['role'];
+		$_SESSION['status'] = 'login';
+		$_SESSION['notif'] = "Login berhasil! Selamat datang, $username.";
+
+		if ($user['role'] === 'admin') {
+			header('Location: dashboard.php');
+		} elseif ($user['role'] === 'user') {
+			header('Location: dashboard_user.php');
+		} else {
+			$_SESSION['notif'] = "Role tidak dikenali.";
+			header('Location: login.php');
+		}
+		exit();
+	} else {
+		$_SESSION['notif'] = "Username atau password salah!";
+		header('Location: login.php');
+		exit();
+	}
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<meta charset="utf-8" />
-	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Halaman Login Kherul</title>
 	<script src="https://cdn.tailwindcss.com"></script>
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 	<style>
 		.shadow-3d {
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -14,17 +51,21 @@
 	</style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-	<div class="bg-white shadow-3d rounded-lg flex flex-col md:flex-row max-w-4xl w-full overflow-hidden">
-		<!-- Bagian kiri: Gambar & Judul -->
-		<div class="bg-gradient-to-b from-blue-500 to-blue-700 text-white p-8 md:rounded-l-lg rounded-t-lg md:rounded-t-none flex flex-col items-center justify-center md:w-1/2 w-full">
-			<img alt="Image of ginger and turmeric" class="mb-4 shadow-3d rounded-full border-4 border-white" height="150" src="https://storage.googleapis.com/a1aa/image/Lndi5D-AMQgWhPUUCYjoEOvtEJWEMDHTcTQhFrNpfc0.jpg" width="150" />
-			<h2 class="text-2xl font-bold mb-4 shadow-3d p-2 rounded bg-white text-black">HELLO ADMIN</h2>
-			<p class="text-center text-lg shadow-3d p-2 rounded bg-white text-black font-bold">Web Monitoring Suhu Bahan Rempah Jamu</p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4">
+	<div class="bg-white shadow-3d rounded-lg flex flex-col lg:flex-row w-full max-w-4xl overflow-hidden">
+		
+		<!-- Sisi kiri: Gambar dan deskripsi -->
+		<div class="bg-gradient-to-b from-blue-500 to-blue-700 text-white p-8 flex flex-col items-center justify-center w-full lg:w-1/2">
+			<img src="https://storage.googleapis.com/a1aa/image/Lndi5D-AMQgWhPUUCYjoEOvtEJWEMDHTcTQhFrNpfc0.jpg"
+				alt="Rempah-rempah" class="mb-4 rounded-full border-4 border-white shadow-3d" width="150" height="150">
+			<h2 class="text-2xl font-bold mb-4 bg-white text-black px-4 py-2 rounded shadow-3d">HELLO ADMIN</h2>
+			<p class="text-center text-lg bg-white text-black font-bold px-4 py-2 rounded shadow-3d">
+				Web Monitoring Suhu Bahan Rempah Jamu
+			</p>
 		</div>
 
-		<!-- Bagian kanan: Form Login -->
-		<div class="p-8 md:w-1/2 w-full shadow-3d bg-white">
+		<!-- Sisi kanan: Form login -->
+		<div class="p-8 w-full lg:w-1/2 bg-white">
 			<?php if (isset($_SESSION['notif'])) : ?>
 				<div class="bg-red-500 text-white p-3 rounded mb-4">
 					<?= $_SESSION['notif']; ?>
@@ -32,7 +73,7 @@
 				<?php unset($_SESSION['notif']); ?>
 			<?php endif; ?>
 
-			<div class="shadow-3d p-6 rounded bg-white">
+			<div class="shadow-3d p-6 rounded">
 				<h2 class="text-3xl font-bold mb-6">Login Account</h2>
 				<form method="post">
 					<!-- Username -->
@@ -42,7 +83,8 @@
 							<span class="bg-gray-100 px-3 py-2 text-black-600 text-xl">
 								<i class="fas fa-user"></i>
 							</span>
-							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="username" name="username" placeholder="Username" type="text" required />
+							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="username" name="username"
+								type="text" placeholder="Username" required />
 						</div>
 					</div>
 
@@ -53,12 +95,14 @@
 							<span class="bg-gray-100 px-3 py-2 text-gray-600 text-xl">
 								<i class="fas fa-lock"></i>
 							</span>
-							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="password" name="password" placeholder="Password" type="password" required />
+							<input class="w-full p-3 text-lg focus:outline-none bg-white" id="password" name="password"
+								type="password" placeholder="Password" required />
 						</div>
 					</div>
 
-					<!-- Tombol -->
-					<button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded text-lg shadow-3d transition duration-300" type="submit">
+					<!-- Tombol Login -->
+					<button class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded text-lg shadow-3d transition duration-300"
+						type="submit">
 						<i class="fas fa-sign-in-alt mr-2"></i> Login
 					</button>
 				</form>
